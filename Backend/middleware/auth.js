@@ -9,13 +9,13 @@ const auth = (req, res, next) => {
         .json({ msg: "No authentication token, authorization denied." });
 
     const verified = jwt.verify(token,`${process.env.JWT_SECRET_KEY}`);
-    console.log("verifiedtokne:",verified)
     if (!verified)
       return res
         .status(401)
         .json({ msg:   "Token verification failed, authorization denied."  });
 
-    req.user = verified.userId
+         req.user=  verified.userId;
+
     next();
   } catch (err) {
     res.status(500).json({ errortoken: err.message });

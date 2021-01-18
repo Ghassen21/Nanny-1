@@ -3,10 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const Register_NannyForm = require('../models/nannyformResgister');
-
-
 const authController = require('../controllers/auth.js');
-
 const auth = require('../middleware/auth.js');
 
 

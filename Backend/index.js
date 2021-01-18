@@ -5,8 +5,8 @@ const bodyParser = require("body-parser");
 const { db } = require("./database-mysql/indexdb");
 authRoutes = require("./routes/userRouter");
 Nannyformrouter = require("./routes/NannyFormRouter");
+editProfileNanny=require("./routes/Editpofilnanny")
 const app = express();
-
 const PORT = process.env.PORT || 5000;
 
 // app.set("views", path.join(__dirname));
@@ -35,6 +35,7 @@ db.authenticate()
   .catch((err) => console.log("Unable to connect to the database:" + err));
   app.use("/", authRoutes);
   app.use("/", Nannyformrouter);
+  app.use("/",editProfileNanny);
 app.listen(PORT, () =>
   console.log(
     `listening on port ${PORT} and To get started, visit: http://localhost:5000`

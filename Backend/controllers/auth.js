@@ -50,18 +50,18 @@ exports.login = async (req, res) => {
     }
 
     const storedUser = user[0];
-    console.log("stored password:", storedUser.Password );
+    console.log("stored password:", storedUser.Password);
     const isEqual = await bcrypt.compare(Password, storedUser.Password);
     if (!isEqual) {
       const error = new Error("Wrong password!");
       error.statusCode = 401;
-      throw  error;
+      throw error;
     }
     const token = jwt.sign(
       { userId: storedUser.id },
       `${process.env.JWT_SECRET_KEY}`
     );
-
+    console.log(token)
     res
       .status(200).json({ message: "you are welcome " })
 
@@ -70,10 +70,7 @@ exports.login = async (req, res) => {
   }
 };
 exports.FormNanny = async (req, res) => {
-  console.log("user:", req.user);
   const errors = validationResult(req);
-  console.log("erro:", errors);
-  console.log("post on /Nannys/nannyform", req.body);
   if (!errors.isEmpty()) return;
   try {
     const FirstName = req.body.FirstName;
@@ -83,8 +80,6 @@ exports.FormNanny = async (req, res) => {
     const Phonenumber = req.body.Phonenumber;
     const About = req.body.About;
     const Email = req.body.Email;
-    console.log(
-      "req after nanny from", LastName, FirstName, Age, About, Region, Phonenumber, Email);
     //Insert  nanny and save it into table
     var resultNannyregisterted = await Register_NannyForm.create({
       FirstName,
@@ -95,13 +90,57 @@ exports.FormNanny = async (req, res) => {
       About,
       Email,
     });
-    var id1 = resultNannyregisterted.id
-    console.log("testid", id1)
-    console.log("resultNannyregisterted:", resultNannyregisterted);
     res
       .status(201)
       .json({ message: "Nanny registered!", resultNannyregisterted });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-};
+}
+
+exports.Edit = async (req, res) => {
+  try {
+    const id =req.user;
+    const FirstName = req.body.FirstName;
+    const LastName = req.body.Lastname;
+    const Age = req.body.Age;
+    const Phonenumber = req.body.Phonenumber;
+    const Region = req.body.Region;
+    const About = req.body.About;
+    const Email = req.body.Email;
+    
+    console.log(req.body)
+    let filtred = Object.entries(req.body).filter(x => x[1] !== '')
+    console.log("req after filtered ", filtred);
+    var filtredobjectdata = {};
+    for (var ele of filtred) {   
+      filtredobjectdata[ele[0]] = ele[1]
+    }
+    console.log("filtredobject",filtredobjectdata)
+    var resultNannyeditFound = await Register_NannyForm.findByPk(id)
+    console.log("resultNannyeditFound",resultNannyeditFound)
+    if (resultNannyeditFound === null) {
+      console.error("nanny not found");
+    } else {
+     updated =await Register_NannyForm.update(filtredobjectdata ,{where:{id:resultNannyeditFound.id}})
+     console.log("updated",updated)
+     res
+      .status(201)
+      .json({ message: "Nannyprofile Updated!" });
+    }
+
+  } catch (err) {
+    res.status(500).json({ errorfromeditprofile: err.message });
+  }
+}
+
+/*Project.find({ where: { title: 'aProject' } })
+  .on('success', function (project) {
+    // Check if record exists in db
+    if (project) {
+      project.update({
+        title: 'a very different title now'
+      })
+      .success(function () {})
+    }
+  })*/

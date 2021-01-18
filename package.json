@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "     sudo kill -9 $(sudo lsof -t -i:5000)&&nodemon ./Backend/index.js",
+    "start": "      nodemon ./Backend/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:steup": "node  ./Backend/database-mysql/indexdb.js"
   },
